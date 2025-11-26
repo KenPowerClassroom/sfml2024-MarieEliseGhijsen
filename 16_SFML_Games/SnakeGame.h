@@ -15,13 +15,24 @@ public:
     static const int MAX_SNAKE_LENGTH = 100;
 
     enum Direction { Down = 0, Left = 1, Right = 2, Up = 3 };
+    struct snakeSegment { int x, y; };
 
     SnakeGame();
 
     void runGame();
+    void update();
+    void draw(RenderWindow& t_window);
+
+    //for tests
+    void setHead(int x, int y) { segments[0] = { x,y }; };
+    void setSegment(int index, int x, int y) { segments[index] = { x, y }; };
+    snakeSegment getSegment(int index) const { return segments[index]; };
+    void setLenght(int length) { snakeLegnth = length; };
+    int getLength() const { return snakeLegnth; };
+    void setFruit(int x, int y) { fruit = { x, y }; };
+    void setDirection(Direction d) { direction = d; };
 
 private:
-    struct snakeSegment { int x, y; };
     snakeSegment segments[100];
     snakeSegment fruit;
 
@@ -36,7 +47,4 @@ private:
 
     float timer;
     float delay;
-
-    void update();
-    void draw(RenderWindow& t_window);
 };

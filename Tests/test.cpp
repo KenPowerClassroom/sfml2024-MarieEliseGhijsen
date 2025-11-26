@@ -7,6 +7,8 @@ const int tileSize = 18;
 #include"../16_SFML_Games/Grid.h"
 #include"../16_SFML_Games/Player.h"
 
+#include "../16_SFML_Games/SnakeGame.h"
+
 
 TEST(Grid, HasWallsAndInterior) {
 
@@ -171,4 +173,79 @@ TEST(Player, ConstrainedDiagonallyFast) {
 
 	EXPECT_EQ(HEIGHT-1, p.y);
 	EXPECT_EQ(WIDTH-1, p.x);
+}
+
+TEST(SnakeGame, MovesRight) 
+{
+	SnakeGame game;
+
+	game.setLenght(4);
+	game.setHead(5, 5);
+	game.setDirection(SnakeGame::Direction::Right);
+
+	game.update();
+
+	auto head = game.getSegment(0);
+	EXPECT_EQ(6, head.x);
+	EXPECT_EQ(5, head.y);
+}
+
+TEST(SnakeGame, MovesUp)
+{
+	SnakeGame game;
+
+	game.setLenght(4);
+	game.setHead(5, 5);
+	game.setDirection(SnakeGame::Direction::Up);
+
+	game.update();
+
+	auto head = game.getSegment(0);
+	EXPECT_EQ(5, head.x);
+	EXPECT_EQ(4, head.y);
+}
+
+TEST(SnakeGame, WrapsRightEdge)
+{
+	SnakeGame game;
+
+	game.setLenght(4);
+	game.setHead(game.GRID_WIDTH, 5);
+	game.setDirection(SnakeGame::Direction::Right);
+
+	game.update();
+
+	auto head = game.getSegment(0);
+	EXPECT_EQ(0, head.x);
+}
+
+TEST(SnakeGame, EatsFruitIncreasesLenght)
+{
+	SnakeGame game;
+
+	game.setLenght(3);
+	game.setHead(4, 4);
+	game.setDirection(SnakeGame::Direction::Right);
+	game.setFruit(5, 4);
+
+	game.update();
+
+	EXPECT_EQ(4, game.getLength());
+}
+
+TEST(SnakeGame, SelfCollisionShortensSnake)
+{
+	SnakeGame game;
+
+	game.setLenght(4);
+	game.setSegment(0, 5, 5);
+	game.setSegment(1, 6, 5);
+	game.setSegment(2, 6, 6);
+	game.setSegment(3, 5, 6);
+
+	game.setDirection(SnakeGame::Direction::Down);
+
+	game.update();
+
+	EXPECT_EQ(2, game.getLength());
 }
