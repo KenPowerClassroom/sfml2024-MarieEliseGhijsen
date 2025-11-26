@@ -2,48 +2,50 @@
 #include <time.h>
 using namespace sf;
 
-const int N = 30;
-const int M = 20;
-const int sz=16;
-const int w = sz*N;
-const int h = sz*M;
+const int GRID_WIDTH = 30;
+const int GRID_HEIGHT = 20;
+const int CELL_SIZE=16;
+const int WINDOW_WIDTH = CELL_SIZE * GRID_WIDTH;
+const int WINDOW_HEIGHT = CELL_SIZE * GRID_HEIGHT;
 
 enum Direction { Down = 0, Left = 1, Right = 2, Up = 3 };
 Direction dir = Direction::Right;
 
-int num=4;
+int snakeLength=4;
 
 struct Snake 
-{ int x,y;}  s[100];
+{ int x,y;}  snakeSegments[100];
 
 struct Fruit
-{ int x,y;} f;
+{ int x,y;} fruit;
 
-void Tick()
+void updateSnake()
  {
-    for (int i=num;i>0;--i)
-     {s[i].x=s[i-1].x; s[i].y=s[i-1].y;}
+    for (int i= snakeLength;i>0;--i)
+     {
+        snakeSegments[i].x= snakeSegments[i-1].x; snakeSegments[i].y= snakeSegments[i-1].y;}
 
-    if (dir== Direction::Down) s[0].y+=1;
-    if (dir== Direction::Left) s[0].x-=1;
-    if (dir== Direction::Right) s[0].x+=1;
-    if (dir== Direction::Up) s[0].y-=1;
+    if (dir== Direction::Down) snakeSegments[0].y+=1;
+    if (dir== Direction::Left) snakeSegments[0].x-=1;
+    if (dir== Direction::Right) snakeSegments[0].x+=1;
+    if (dir== Direction::Up) snakeSegments[0].y-=1;
 
-    if ((s[0].x==f.x) && (s[0].y==f.y)) 
-     {num++; f.x=rand()%N; f.y=rand()%M;}
+    if ((snakeSegments[0].x== fruit.x) && (snakeSegments[0].y== fruit.y))
+     {
+        snakeLength++; fruit.x=rand()% GRID_WIDTH; fruit.y=rand()% GRID_HEIGHT;}
 
-    if (s[0].x>N) s[0].x=0;  if (s[0].x<0) s[0].x=N;
-    if (s[0].y>M) s[0].y=0;  if (s[0].y<0) s[0].y=M;
+    if (snakeSegments[0].x> GRID_WIDTH) snakeSegments[0].x=0;  if (snakeSegments[0].x<0) snakeSegments[0].x= GRID_WIDTH;
+    if (snakeSegments[0].y> GRID_HEIGHT) snakeSegments[0].y=0;  if (snakeSegments[0].y<0) snakeSegments[0].y= GRID_HEIGHT;
  
-    for (int i=1;i<num;i++)
-     if (s[0].x==s[i].x && s[0].y==s[i].y)  num=i;
+    for (int i=1;i< snakeLength;i++)
+     if (snakeSegments[0].x== snakeSegments[i].x && snakeSegments[0].y== snakeSegments[i].y)  snakeLength =i;
  }
 
 int snake()
 {  
     srand(time(0));
 
-    RenderWindow window(VideoMode(w, h), "Snake Game!");
+    RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Snake Game!");
 
     Texture t1,t2;
     t1.loadFromFile("images/snake/white.png");
@@ -55,8 +57,8 @@ int snake()
     Clock clock;
     float timer=0, delay=0.1;
 
-    f.x=10;
-    f.y=10; 
+    fruit.x=10;
+    fruit.y=10;
     
     while (window.isOpen())
     {
@@ -76,19 +78,19 @@ int snake()
         if (Keyboard::isKeyPressed(Keyboard::Up)) dir = Direction::Up;
         if (Keyboard::isKeyPressed(Keyboard::Down)) dir = Direction::Down;
 
-        if (timer>delay) {timer=0; Tick();}
+        if (timer>delay) {timer=0; updateSnake();}
 
    ////// draw  ///////
     window.clear();
 
-    for (int i=0; i<N; i++) 
-      for (int j=0; j<M; j++) 
-        { sprite1.setPosition(i*sz, j*sz);  window.draw(sprite1); }
+    for (int i=0; i< GRID_WIDTH; i++)
+      for (int j=0; j< GRID_HEIGHT; j++)
+        { sprite1.setPosition(i* CELL_SIZE, j* CELL_SIZE);  window.draw(sprite1); }
 
-    for (int i=0;i<num;i++)
-        { sprite2.setPosition(s[i].x*sz, s[i].y*sz);  window.draw(sprite2); }
+    for (int i=0;i< snakeLength;i++)
+        { sprite2.setPosition(snakeSegments[i].x* CELL_SIZE, snakeSegments[i].y* CELL_SIZE);  window.draw(sprite2); }
    
-    sprite2.setPosition(f.x*sz, f.y*sz);  window.draw(sprite2);    
+    sprite2.setPosition(fruit.x* CELL_SIZE, fruit.y* CELL_SIZE);  window.draw(sprite2);
 
     window.display();
     }
