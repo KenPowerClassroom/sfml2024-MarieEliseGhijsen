@@ -19,7 +19,7 @@ struct Snake
 struct Fruit
 { int x,y;} fruit;
 
-void updateSnake()
+void update()
  {
     for (int i= snakeLength;i>0;--i)
     {
@@ -56,7 +56,7 @@ void updateSnake()
     }
     if (snakeSegments[0].x < 0)
     {
-        snakeSegments[0].x = GRID_WIDTH;
+        snakeSegments[0].x = GRID_WIDTH - 1;
     }
     if (snakeSegments[0].y > GRID_HEIGHT)
     {
@@ -64,7 +64,7 @@ void updateSnake()
     }
     if (snakeSegments[0].y < 0)
     {
-       snakeSegments[0].y = GRID_HEIGHT;
+        snakeSegments[0].y = GRID_HEIGHT - 1;
     }
  
     for (int i = 1; i < snakeLength; i++)
@@ -75,6 +75,27 @@ void updateSnake()
         }
     }
  }
+
+void draw(RenderWindow& t_window, Sprite& t_tileSprite, Sprite& t_snakeSprite)
+{
+    for (int i = 0; i < GRID_WIDTH; i++)
+    {
+        for (int j = 0; j < GRID_HEIGHT; j++)
+        {
+            t_tileSprite.setPosition(i * CELL_SIZE, j * CELL_SIZE);
+            t_window.draw(t_tileSprite);
+        }
+    }
+
+    for (int i = 0; i < snakeLength; i++)
+    {
+        t_snakeSprite.setPosition(snakeSegments[i].x * CELL_SIZE, snakeSegments[i].y * CELL_SIZE);
+        t_window.draw(t_snakeSprite);
+    }
+
+    t_snakeSprite.setPosition(fruit.x * CELL_SIZE, fruit.y * CELL_SIZE);
+    t_window.draw(t_snakeSprite);
+}
 
 int snake()
 {  
@@ -106,7 +127,7 @@ int snake()
         Event event;
         while (window.pollEvent(event))
         {
-            if (e.type == Event::Closed)
+            if (event.type == Event::Closed)
             {
                 window.close();
             }
@@ -132,30 +153,12 @@ int snake()
         if (timer > delay)
         {
             timer = 0; 
-            updateSnake();
+            update();
         }
 
         ////// draw  ///////
         window.clear();
-
-        for (int i = 0; i < GRID_WIDTH; i++)
-        {
-            for (int j = 0; j < GRID_HEIGHT; j++)
-            {
-                tileSprite.setPosition(i * CELL_SIZE, j * CELL_SIZE);
-                window.draw(tileSprite);
-            }
-        }
-
-        for (int i = 0; i < snakeLength; i++)
-        {
-            snakeSprite.setPosition(snakeSegments[i].x * CELL_SIZE, snakeSegments[i].y * CELL_SIZE);
-            window.draw(snakeSprite);
-        }
-   
-        snakeSprite.setPosition(fruit.x * CELL_SIZE, fruit.y * CELL_SIZE);
-        window.draw(snakeSprite);
-
+        draw(window, tileSprite, snakeSprite);
         window.display();
     }
 
