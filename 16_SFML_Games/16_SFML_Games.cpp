@@ -17,12 +17,20 @@
 #pragma comment(lib,"winmm.lib")
 #pragma comment(lib,"freetype.lib")
 
+#include "SnakeGame.h"
+
 #include<iostream>
 
 int tetris();
 int doodle_jump();
 int arkanoid();
-int snake();
+int snake()
+{
+    SnakeGame game;
+    game.runGame();
+
+    return 0;
+}
 int minesweeper();
 int fifteen_puzzle();
 int racing();

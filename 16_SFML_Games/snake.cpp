@@ -1,43 +1,4 @@
-#include <SFML/Graphics.hpp>
-#include <ctime>
-using namespace sf;
-
-class SnakeGame
-{
-public:
-    static const int GRID_WIDTH = 30;
-    static const int GRID_HEIGHT = 20;
-    static const int CELL_SIZE = 16;
-    static const int WINDOW_WIDTH = CELL_SIZE * GRID_WIDTH;
-    static const int WINDOW_HEIGHT = CELL_SIZE * GRID_HEIGHT;
-    static const int MAX_SNAKE_LENGTH = 100;
-
-    enum Direction { Down = 0, Left = 1, Right = 2, Up = 3 };
-
-    SnakeGame();
-
-    int runGame();
-
-private:
-    struct snakeSegment { int x, y; };
-    snakeSegment[100] segments;
-    snakeSegment fruit;
-
-    Direction direction;
-    int snakeLegnth;
-
-    Texture tileTexture;
-    Texture snakeTexture;
-
-    Sprite tileSprite;
-    Sprite snakeSprite;
-
-    float timer;
-    float delay;
-
-    void update();
-    void draw(RenderWindow& t_window);
-};
+#include "SnakeGame.h"
 
 SnakeGame::SnakeGame() : direction(Right), snakeLegnth(4), timer(0.0f), delay(0.0f)
 {
@@ -51,11 +12,11 @@ SnakeGame::SnakeGame() : direction(Right), snakeLegnth(4), timer(0.0f), delay(0.
     tileTexture.loadFromFile("images/snake/white.png");
     snakeTexture.loadFromFile("images/snake/red.png");
 
-    tileSprite(tileTexture);
-    snakeSprite(snakeTexture);
+    tileSprite.setTexture(tileTexture);
+    snakeSprite.setTexture(snakeTexture);
 }
 
-int SnakeGame::runGame()
+void SnakeGame::runGame()
 {
     srand(static_cast<unsigned>(time(nullptr)));
 
