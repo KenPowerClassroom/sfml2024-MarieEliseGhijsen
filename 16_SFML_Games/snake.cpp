@@ -2,12 +2,16 @@
 #include <time.h>
 using namespace sf;
 
-int N=30,M=20;
-int sz=16;
-int w = sz*N;
-int h = sz*M;
+const int N = 30;
+const int M = 20;
+const int sz=16;
+const int w = sz*N;
+const int h = sz*M;
 
-int dir,num=4;
+enum Direction { Down = 0, Left = 1, Right = 2, Up = 3 };
+Direction dir = Direction::Right;
+
+int num=4;
 
 struct Snake 
 { int x,y;}  s[100];
@@ -20,10 +24,10 @@ void Tick()
     for (int i=num;i>0;--i)
      {s[i].x=s[i-1].x; s[i].y=s[i-1].y;}
 
-    if (dir==0) s[0].y+=1;      
-    if (dir==1) s[0].x-=1;        
-    if (dir==2) s[0].x+=1;         
-    if (dir==3) s[0].y-=1;   
+    if (dir== Direction::Down) s[0].y+=1;
+    if (dir== Direction::Left) s[0].x-=1;
+    if (dir== Direction::Right) s[0].x+=1;
+    if (dir== Direction::Up) s[0].y-=1;
 
     if ((s[0].x==f.x) && (s[0].y==f.y)) 
      {num++; f.x=rand()%N; f.y=rand()%M;}
@@ -67,10 +71,10 @@ int snake()
                 window.close();
         }
 
-        if (Keyboard::isKeyPressed(Keyboard::Left)) dir=1;   
-        if (Keyboard::isKeyPressed(Keyboard::Right)) dir=2;    
-        if (Keyboard::isKeyPressed(Keyboard::Up)) dir=3;
-        if (Keyboard::isKeyPressed(Keyboard::Down)) dir=0;
+        if (Keyboard::isKeyPressed(Keyboard::Left)) dir = Direction::Left;
+        if (Keyboard::isKeyPressed(Keyboard::Right)) dir = Direction::Right;
+        if (Keyboard::isKeyPressed(Keyboard::Up)) dir = Direction::Up;
+        if (Keyboard::isKeyPressed(Keyboard::Down)) dir = Direction::Down;
 
         if (timer>delay) {timer=0; Tick();}
 
