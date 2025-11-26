@@ -22,23 +22,59 @@ struct Fruit
 void updateSnake()
  {
     for (int i= snakeLength;i>0;--i)
-     {
-        snakeSegments[i].x= snakeSegments[i-1].x; snakeSegments[i].y= snakeSegments[i-1].y;}
+    {
+        snakeSegments[i].x = snakeSegments[i - 1].x;
+        snakeSegments[i].y = snakeSegments[i - 1].y;
+    }
 
-    if (dir== Direction::Down) snakeSegments[0].y+=1;
-    if (dir== Direction::Left) snakeSegments[0].x-=1;
-    if (dir== Direction::Right) snakeSegments[0].x+=1;
-    if (dir== Direction::Up) snakeSegments[0].y-=1;
+    if (dir == Direction::Down)
+    {
+        snakeSegments[0].y += 1;
+    }
+    else if (dir == Direction::Left)
+    {
+        snakeSegments[0].x -= 1;
+    }
+    else if (dir == Direction::Right)
+    {
+        snakeSegments[0].x += 1;
+    }
+    else if (dir == Direction::Up)
+    {
+        snakeSegments[0].y -= 1;
+    }
 
     if ((snakeSegments[0].x== fruit.x) && (snakeSegments[0].y== fruit.y))
-     {
-        snakeLength++; fruit.x=rand()% GRID_WIDTH; fruit.y=rand()% GRID_HEIGHT;}
+    {
+        snakeLength++;
+        fruit.x = rand() % GRID_WIDTH;
+        fruit.y = rand() % GRID_HEIGHT;
+    }
 
-    if (snakeSegments[0].x> GRID_WIDTH) snakeSegments[0].x=0;  if (snakeSegments[0].x<0) snakeSegments[0].x= GRID_WIDTH;
-    if (snakeSegments[0].y> GRID_HEIGHT) snakeSegments[0].y=0;  if (snakeSegments[0].y<0) snakeSegments[0].y= GRID_HEIGHT;
+    if (snakeSegments[0].x > GRID_WIDTH)
+    {
+        snakeSegments[0].x = 0;
+        if (snakeSegments[0].x < 0)
+        {
+            snakeSegments[0].x = GRID_WIDTH;
+        }
+    }
+    if (snakeSegments[0].y > GRID_HEIGHT)
+    {
+        snakeSegments[0].y = 0;
+        if (snakeSegments[0].y < 0)
+        {
+            snakeSegments[0].y = GRID_HEIGHT;
+        }
+    }
  
-    for (int i=1;i< snakeLength;i++)
-     if (snakeSegments[0].x== snakeSegments[i].x && snakeSegments[0].y== snakeSegments[i].y)  snakeLength =i;
+    for (int i = 1; i < snakeLength; i++)
+    {
+        if (snakeSegments[0].x == snakeSegments[i].x && snakeSegments[0].y == snakeSegments[i].y)
+        {
+            snakeLength = i;
+        }
+    }
  }
 
 int snake()
@@ -47,7 +83,8 @@ int snake()
 
     RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Snake Game!");
 
-    Texture t1,t2;
+    Texture t1;
+    Texture t2;
     t1.loadFromFile("images/snake/white.png");
     t2.loadFromFile("images/snake/red.png");
 
@@ -55,44 +92,71 @@ int snake()
     Sprite sprite2(t2);
 
     Clock clock;
-    float timer=0, delay=0.1;
+    float timer = 0;
+    float delay = 0.1;
 
-    fruit.x=10;
-    fruit.y=10;
+    fruit.x = 10;
+    fruit.y = 10;
     
     while (window.isOpen())
     {
         float time = clock.getElapsedTime().asSeconds();
         clock.restart();
-        timer+=time; 
+        timer += time;
 
         Event e;
         while (window.pollEvent(e))
         {
-            if (e.type == Event::Closed)      
+            if (e.type == Event::Closed)
+            {
                 window.close();
+            }
         }
 
-        if (Keyboard::isKeyPressed(Keyboard::Left)) dir = Direction::Left;
-        if (Keyboard::isKeyPressed(Keyboard::Right)) dir = Direction::Right;
-        if (Keyboard::isKeyPressed(Keyboard::Up)) dir = Direction::Up;
-        if (Keyboard::isKeyPressed(Keyboard::Down)) dir = Direction::Down;
+        if (Keyboard::isKeyPressed(Keyboard::Left))
+        {
+            dir = Direction::Left;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Right))
+        {
+            dir = Direction::Right;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Up))
+        {
+            dir = Direction::Up;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Down))
+        {
+            dir = Direction::Down;
+        }
 
-        if (timer>delay) {timer=0; updateSnake();}
+        if (timer > delay)
+        {
+            timer = 0; updateSnake();
+        }
 
-   ////// draw  ///////
-    window.clear();
+        ////// draw  ///////
+        window.clear();
 
-    for (int i=0; i< GRID_WIDTH; i++)
-      for (int j=0; j< GRID_HEIGHT; j++)
-        { sprite1.setPosition(i* CELL_SIZE, j* CELL_SIZE);  window.draw(sprite1); }
+        for (int i = 0; i < GRID_WIDTH; i++)
+        {
+            for (int j = 0; j < GRID_HEIGHT; j++)
+            {
+                sprite1.setPosition(i * CELL_SIZE, j * CELL_SIZE);
+                window.draw(sprite1);
+            }
+        }
 
-    for (int i=0;i< snakeLength;i++)
-        { sprite2.setPosition(snakeSegments[i].x* CELL_SIZE, snakeSegments[i].y* CELL_SIZE);  window.draw(sprite2); }
+        for (int i = 0; i < snakeLength; i++)
+        {
+            sprite2.setPosition(snakeSegments[i].x * CELL_SIZE, snakeSegments[i].y * CELL_SIZE);
+            window.draw(sprite2);
+        }
    
-    sprite2.setPosition(fruit.x* CELL_SIZE, fruit.y* CELL_SIZE);  window.draw(sprite2);
+        sprite2.setPosition(fruit.x * CELL_SIZE, fruit.y * CELL_SIZE);
+        window.draw(sprite2);
 
-    window.display();
+        window.display();
     }
 
     return 0;
