@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include <time.h>
+#include <ctime>
 using namespace sf;
 
 const int GRID_WIDTH = 30;
@@ -27,21 +27,20 @@ void updateSnake()
         snakeSegments[i].y = snakeSegments[i - 1].y;
     }
 
-    if (dir == Direction::Down)
+    switch (dir)
     {
+    case Down:
         snakeSegments[0].y += 1;
-    }
-    else if (dir == Direction::Left)
-    {
+        break;
+    case Left:
         snakeSegments[0].x -= 1;
-    }
-    else if (dir == Direction::Right)
-    {
+        break;
+    case Right:
         snakeSegments[0].x += 1;
-    }
-    else if (dir == Direction::Up)
-    {
+        break;
+    case Up:
         snakeSegments[0].y -= 1;
+        break;
     }
 
     if ((snakeSegments[0].x== fruit.x) && (snakeSegments[0].y== fruit.y))
@@ -54,18 +53,18 @@ void updateSnake()
     if (snakeSegments[0].x > GRID_WIDTH)
     {
         snakeSegments[0].x = 0;
-        if (snakeSegments[0].x < 0)
-        {
-            snakeSegments[0].x = GRID_WIDTH;
-        }
+    }
+    if (snakeSegments[0].x < 0)
+    {
+        snakeSegments[0].x = GRID_WIDTH;
     }
     if (snakeSegments[0].y > GRID_HEIGHT)
     {
         snakeSegments[0].y = 0;
-        if (snakeSegments[0].y < 0)
-        {
-            snakeSegments[0].y = GRID_HEIGHT;
-        }
+    }
+    if (snakeSegments[0].y < 0)
+    {
+       snakeSegments[0].y = GRID_HEIGHT;
     }
  
     for (int i = 1; i < snakeLength; i++)
@@ -79,17 +78,17 @@ void updateSnake()
 
 int snake()
 {  
-    srand(time(0));
+    srand(static_cast<unsigned>(time(nullptr)));
 
     RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Snake Game!");
 
-    Texture t1;
-    Texture t2;
-    t1.loadFromFile("images/snake/white.png");
-    t2.loadFromFile("images/snake/red.png");
+    Texture tileTexture;
+    Texture snakeTexture;
+    tileTexture.loadFromFile("images/snake/white.png");
+    snakeTexture.loadFromFile("images/snake/red.png");
 
-    Sprite sprite1(t1);
-    Sprite sprite2(t2);
+    Sprite tileSprite(tileTexture);
+    Sprite snakeSprite(snakeTexture);
 
     Clock clock;
     float timer = 0;
@@ -104,8 +103,8 @@ int snake()
         clock.restart();
         timer += time;
 
-        Event e;
-        while (window.pollEvent(e))
+        Event event;
+        while (window.pollEvent(event))
         {
             if (e.type == Event::Closed)
             {
@@ -132,7 +131,8 @@ int snake()
 
         if (timer > delay)
         {
-            timer = 0; updateSnake();
+            timer = 0; 
+            updateSnake();
         }
 
         ////// draw  ///////
@@ -142,19 +142,19 @@ int snake()
         {
             for (int j = 0; j < GRID_HEIGHT; j++)
             {
-                sprite1.setPosition(i * CELL_SIZE, j * CELL_SIZE);
-                window.draw(sprite1);
+                tileSprite.setPosition(i * CELL_SIZE, j * CELL_SIZE);
+                window.draw(tileSprite);
             }
         }
 
         for (int i = 0; i < snakeLength; i++)
         {
-            sprite2.setPosition(snakeSegments[i].x * CELL_SIZE, snakeSegments[i].y * CELL_SIZE);
-            window.draw(sprite2);
+            snakeSprite.setPosition(snakeSegments[i].x * CELL_SIZE, snakeSegments[i].y * CELL_SIZE);
+            window.draw(snakeSprite);
         }
    
-        sprite2.setPosition(fruit.x * CELL_SIZE, fruit.y * CELL_SIZE);
-        window.draw(sprite2);
+        snakeSprite.setPosition(fruit.x * CELL_SIZE, fruit.y * CELL_SIZE);
+        window.draw(snakeSprite);
 
         window.display();
     }
